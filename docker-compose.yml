@@ -1,0 +1,6 @@
+services:
+  qrticketgeneratorvenvub:
+    image: qrticketgeneratorvenvub
+    build:
+      context: .
+      dockerfile: ./Dockerfile
