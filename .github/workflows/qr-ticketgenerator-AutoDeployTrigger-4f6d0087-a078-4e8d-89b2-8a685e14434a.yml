@@ -1,0 +1,48 @@
+name: Trigger auto deployment for qr-ticketgenerator
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/qr-ticketgenerator-AutoDeployTrigger-4f6d0087-a078-4e8d-89b2-8a685e14434a.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.QRTICKETGENERATOR_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.QRTICKETGENERATOR_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.QRTICKETGENERATOR_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: coralscontreg-fcfdb2buacb3fydn.azurecr.io
+          registryUsername: ${{ secrets.QRTICKETGENERATOR_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.QRTICKETGENERATOR_REGISTRY_PASSWORD }}
+          containerAppName: qr-ticketgenerator
+          resourceGroup: corals-container-env
+          imageToBuild: coralscontreg-fcfdb2buacb3fydn.azurecr.io/qr-ticketgenerator:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
