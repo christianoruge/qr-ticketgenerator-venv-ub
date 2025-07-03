@@ -14,3 +14,7 @@ Exports are:
 * A folder called "QR-codes", containing all QR-codes as image files
 * A folder called "Tickets", containing all tickets as pdf-files
 * An Excel-file called "Orders_list" with all participants, and a column to make comments, i.e. mark at arrival.
+
+IMPORTANT: 
+To read the QR-code not all QR-readers can be used. Some readers will convert the text to an internet search. 
+One reader which is usable for reading this apps QR-codes is "QR Reader for iPhone" by TapMedia Ltd.
